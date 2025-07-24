@@ -6,6 +6,11 @@ import 'package:confidence_boost/providers/auth_provider.dart';
 import 'package:confidence_boost/providers/task_provider.dart';
 import 'package:confidence_boost/providers/success_provider.dart';
 import 'package:confidence_boost/providers/user_provider.dart';
+import 'package:confidence_boost/providers/project_provider.dart';
+import 'package:confidence_boost/providers/mood_provider.dart';
+import 'package:confidence_boost/providers/challenge_provider.dart';
+import 'package:confidence_boost/providers/community_provider.dart';
+import 'package:confidence_boost/providers/learning_provider.dart';
 import 'package:confidence_boost/screens/splash_screen.dart';
 import 'package:confidence_boost/utils/theme.dart';
 
@@ -26,6 +31,11 @@ class ConfidenceBoostApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TaskProvider()),
         ChangeNotifierProvider(create: (_) => SuccessProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ProjectProvider()),
+        ChangeNotifierProvider(create: (_) => MoodProvider()),
+        ChangeNotifierProvider(create: (_) => ChallengeProvider()),
+        ChangeNotifierProvider(create: (_) => CommunityProvider()),
+        ChangeNotifierProvider(create: (_) => LearningProvider()),
       ],
       child: MaterialApp(
         title: 'ConfidenceBoost',
