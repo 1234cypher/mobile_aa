@@ -9,7 +9,7 @@ class SuccessProvider with ChangeNotifier {
 
   List<SuccessEntry> get successes => _successes;
   bool get isLoading => _isLoading;
-  
+
   List<SuccessEntry> get recentSuccesses {
     final sorted = List<SuccessEntry>.from(_successes)
       ..sort((a, b) => b.date.compareTo(a.date));
@@ -27,7 +27,7 @@ class SuccessProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final successesJson = prefs.getStringList('successes') ?? [];
-      
+
       _successes = successesJson.map((successJson) {
         final successMap = json.decode(successJson);
         return SuccessEntry.fromJson(successMap);
@@ -49,7 +49,8 @@ class SuccessProvider with ChangeNotifier {
     final demoSuccesses = [
       SuccessEntry(
         title: 'Présentation réussie',
-        description: 'J\'ai présenté mon projet devant 20 personnes avec confiance',
+        description:
+            'J\'ai présenté mon projet devant 20 personnes avec confiance',
         category: SuccessCategory.professional,
         date: DateTime.now().subtract(const Duration(days: 1)),
         confidenceImpact: 5,
@@ -84,7 +85,8 @@ class SuccessProvider with ChangeNotifier {
   }
 
   Future<void> updateSuccess(SuccessEntry updatedSuccess) async {
-    final index = _successes.indexWhere((success) => success.id == updatedSuccess.id);
+    final index =
+        _successes.indexWhere((success) => success.id == updatedSuccess.id);
     if (index != -1) {
       _successes[index] = updatedSuccess;
       await _saveSuccessesToStorage();
@@ -100,7 +102,32 @@ class SuccessProvider with ChangeNotifier {
 
   Future<void> _saveSuccessesToStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    final successesJson = _successes.map((success) => json.encode(success.toJson())).toList();
+    final successesJson =
+        _successes.map((success) => json.encode(success.toJson())).toList();
     await prefs.setStringList('successes', successesJson);
+  }
+
+  List<SuccessEntry> filterSuccesses({
+    SuccessCategory? category,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? tags,
+  }) {
+    return _successes.where((success) {
+      final matchesCategory = category == null || success.category == category;
+      final matchesStartDate = startDate == null ||
+          success.date.isAfter(startDate) ||
+          success.date.isAtSameMomentAs(startDate);
+      final matchesEndDate = endDate == null ||
+          success.date.isBefore(endDate) ||
+          success.date.isAtSameMomentAs(endDate);
+      final matchesTags = tags == null ||
+          tags.isEmpty ||
+          tags.any((tag) => success.tags.contains(tag));
+      return matchesCategory &&
+          matchesStartDate &&
+          matchesEndDate &&
+          matchesTags;
+    }).toList();
   }
 }

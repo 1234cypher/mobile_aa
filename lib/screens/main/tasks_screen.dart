@@ -13,7 +13,8 @@ class TasksScreen extends StatefulWidget {
   State<TasksScreen> createState() => _TasksScreenState();
 }
 
-class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin {
+class _TasksScreenState extends State<TasksScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -51,9 +52,15 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
           return TabBarView(
             controller: _tabController,
             children: [
-              _buildTaskList(taskProvider.tasks.where((t) => t.status == TaskStatus.pending).toList()),
-              _buildTaskList(taskProvider.tasks.where((t) => t.status == TaskStatus.inProgress).toList()),
-              _buildTaskList(taskProvider.tasks.where((t) => t.status == TaskStatus.completed).toList()),
+              _buildTaskList(taskProvider.tasks
+                  .where((t) => t.status == TaskStatus.pending)
+                  .toList()),
+              _buildTaskList(taskProvider.tasks
+                  .where((t) => t.status == TaskStatus.inProgress)
+                  .toList()),
+              _buildTaskList(taskProvider.tasks
+                  .where((t) => t.status == TaskStatus.completed)
+                  .toList()),
             ],
           );
         },
@@ -81,8 +88,8 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
             Text(
               'Aucune tâche',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+                    color: AppTheme.textSecondary,
+                  ),
             ),
           ],
         ),
@@ -139,19 +146,20 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: task.status == TaskStatus.completed 
-                            ? AppTheme.accentColor 
+                        color: task.status == TaskStatus.completed
+                            ? AppTheme.accentColor
                             : Colors.transparent,
                         border: Border.all(
-                          color: task.status == TaskStatus.completed 
-                              ? AppTheme.accentColor 
+                          color: task.status == TaskStatus.completed
+                              ? AppTheme.accentColor
                               : AppTheme.textSecondary,
                           width: 2,
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: task.status == TaskStatus.completed
-                          ? const Icon(Icons.check, color: Colors.white, size: 16)
+                          ? const Icon(Icons.check,
+                              color: Colors.white, size: 16)
                           : null,
                     ),
                   ),
@@ -160,18 +168,19 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                     child: Text(
                       task.title,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        decoration: task.status == TaskStatus.completed 
-                            ? TextDecoration.lineThrough 
-                            : null,
-                        color: task.status == TaskStatus.completed 
-                            ? AppTheme.textSecondary 
-                            : AppTheme.textPrimary,
-                      ),
+                            fontWeight: FontWeight.w600,
+                            decoration: task.status == TaskStatus.completed
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: task.status == TaskStatus.completed
+                                ? AppTheme.textSecondary
+                                : AppTheme.textPrimary,
+                          ),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: _getPriorityColor(task.priority).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -192,44 +201,49 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                 Text(
                   task.description!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
-                  ),
+                        color: AppTheme.textSecondary,
+                      ),
                 ),
               ],
-              if (task.category != null || task.estimatedMinutes != null || task.dueDate != null) ...[
+              if (task.category != null ||
+                  task.estimatedMinutes != null ||
+                  task.dueDate != null) ...[
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     if (task.category != null) ...[
-                      Icon(Iconsax.category, size: 16, color: AppTheme.textSecondary),
+                      Icon(Iconsax.category,
+                          size: 16, color: AppTheme.textSecondary),
                       const SizedBox(width: 4),
                       Text(
-                        task.category!,
+                        task.category.toString().split('.').last,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
+                              color: AppTheme.textSecondary,
+                            ),
                       ),
                       const SizedBox(width: 16),
                     ],
                     if (task.estimatedMinutes != null) ...[
-                      Icon(Iconsax.timer, size: 16, color: AppTheme.textSecondary),
+                      Icon(Iconsax.timer,
+                          size: 16, color: AppTheme.textSecondary),
                       const SizedBox(width: 4),
                       Text(
                         '${task.estimatedMinutes}min',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
+                              color: AppTheme.textSecondary,
+                            ),
                       ),
                       const SizedBox(width: 16),
                     ],
                     if (task.dueDate != null) ...[
-                      Icon(Iconsax.calendar, size: 16, color: AppTheme.textSecondary),
+                      Icon(Iconsax.calendar,
+                          size: 16, color: AppTheme.textSecondary),
                       const SizedBox(width: 4),
                       Text(
                         '${task.dueDate!.day}/${task.dueDate!.month}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppTheme.textSecondary,
-                        ),
+                              color: AppTheme.textSecondary,
+                            ),
                       ),
                     ],
                   ],
@@ -283,7 +297,7 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
     final titleController = TextEditingController();
     final descriptionController = TextEditingController();
     TaskPriority selectedPriority = TaskPriority.medium;
-    
+
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -316,10 +330,12 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                     labelText: 'Priorité',
                     border: OutlineInputBorder(),
                   ),
-                  items: TaskPriority.values.map((priority) => DropdownMenuItem(
-                    value: priority,
-                    child: Text(_getPriorityText(priority)),
-                  )).toList(),
+                  items: TaskPriority.values
+                      .map((priority) => DropdownMenuItem(
+                            value: priority,
+                            child: Text(_getPriorityText(priority)),
+                          ))
+                      .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       setState(() {
@@ -341,14 +357,15 @@ class _TasksScreenState extends State<TasksScreen> with TickerProviderStateMixin
                 if (titleController.text.isNotEmpty) {
                   final task = Task(
                     title: titleController.text,
-                    description: descriptionController.text.isNotEmpty 
-                        ? descriptionController.text 
+                    description: descriptionController.text.isNotEmpty
+                        ? descriptionController.text
                         : null,
                     priority: selectedPriority,
                     dueDate: DateTime.now(),
                   );
-                  
-                  Provider.of<TaskProvider>(context, listen: false).addTask(task);
+
+                  Provider.of<TaskProvider>(context, listen: false)
+                      .addTask(task);
                   Navigator.of(context).pop();
                 }
               },

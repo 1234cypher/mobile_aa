@@ -30,6 +30,8 @@ dependencies:
   uuid: ^4.1.0
   #datatime
   intl: ^0.18.1
+  table_calendar: ^3.0.9
+  image_picker: ^0.8.7+4
 
 dev_dependencies:
   flutter_test:

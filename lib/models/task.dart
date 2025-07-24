@@ -1,7 +1,10 @@
 import 'package:uuid/uuid.dart';
 
 enum TaskPriority { low, medium, high, urgent }
+
 enum TaskStatus { pending, inProgress, completed }
+
+enum TaskCategory { professional, personal, domestic, leave, wellbeing, other }
 
 class Task {
   final String id;
@@ -13,7 +16,7 @@ class Task {
   final DateTime? dueDate;
   final int? estimatedMinutes;
   final List<String> subtasks;
-  final String? category;
+  final TaskCategory category;
 
   Task({
     String? id,
@@ -25,9 +28,9 @@ class Task {
     this.dueDate,
     this.estimatedMinutes,
     this.subtasks = const [],
-    this.category,
-  }) : id = id ?? const Uuid().v4(),
-       createdAt = createdAt ?? DateTime.now();
+    this.category = TaskCategory.other,
+  })  : id = id ?? const Uuid().v4(),
+        createdAt = createdAt ?? DateTime.now();
 
   Task copyWith({
     String? id,
@@ -39,7 +42,7 @@ class Task {
     DateTime? dueDate,
     int? estimatedMinutes,
     List<String>? subtasks,
-    String? category,
+    TaskCategory? category,
   }) {
     return Task(
       id: id ?? this.id,
@@ -66,7 +69,7 @@ class Task {
       'dueDate': dueDate?.toIso8601String(),
       'estimatedMinutes': estimatedMinutes,
       'subtasks': subtasks,
-      'category': category,
+      'category': category.index,
     };
   }
 
@@ -81,7 +84,7 @@ class Task {
       dueDate: json['dueDate'] != null ? DateTime.parse(json['dueDate']) : null,
       estimatedMinutes: json['estimatedMinutes'],
       subtasks: List<String>.from(json['subtasks'] ?? []),
-      category: json['category'],
+      category: TaskCategory.values[json['category']],
     );
   }
 }

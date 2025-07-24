@@ -9,19 +9,21 @@ class TaskProvider with ChangeNotifier {
 
   List<Task> get tasks => _tasks;
   bool get isLoading => _isLoading;
-  
+
   List<Task> get todayTasks {
     final today = DateTime.now();
     return _tasks.where((task) {
-      return task.dueDate != null && 
-             task.dueDate!.day == today.day &&
-             task.dueDate!.month == today.month &&
-             task.dueDate!.year == today.year;
+      return task.dueDate != null &&
+          task.dueDate!.day == today.day &&
+          task.dueDate!.month == today.month &&
+          task.dueDate!.year == today.year;
     }).toList();
   }
 
-  List<Task> get completedTasks => _tasks.where((task) => task.status == TaskStatus.completed).toList();
-  List<Task> get pendingTasks => _tasks.where((task) => task.status != TaskStatus.completed).toList();
+  List<Task> get completedTasks =>
+      _tasks.where((task) => task.status == TaskStatus.completed).toList();
+  List<Task> get pendingTasks =>
+      _tasks.where((task) => task.status != TaskStatus.completed).toList();
 
   TaskProvider() {
     _loadTasksFromStorage();
@@ -34,7 +36,7 @@ class TaskProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final tasksJson = prefs.getStringList('tasks') ?? [];
-      
+
       _tasks = tasksJson.map((taskJson) {
         final taskMap = json.decode(taskJson);
         return Task.fromJson(taskMap);
@@ -60,7 +62,7 @@ class TaskProvider with ChangeNotifier {
         priority: TaskPriority.high,
         dueDate: DateTime.now().add(const Duration(days: 1)),
         estimatedMinutes: 120,
-        category: 'Professionnel',
+        category: TaskCategory.professional,
       ),
       Task(
         title: 'Séance de sport',
@@ -68,7 +70,7 @@ class TaskProvider with ChangeNotifier {
         priority: TaskPriority.medium,
         dueDate: DateTime.now(),
         estimatedMinutes: 30,
-        category: 'Bien-être',
+        category: TaskCategory.wellbeing,
       ),
       Task(
         title: 'Appeler maman',
@@ -76,7 +78,7 @@ class TaskProvider with ChangeNotifier {
         priority: TaskPriority.low,
         dueDate: DateTime.now(),
         estimatedMinutes: 15,
-        category: 'Personnel',
+        category: TaskCategory.personal,
       ),
     ];
 
@@ -107,10 +109,10 @@ class TaskProvider with ChangeNotifier {
 
   Future<void> toggleTaskStatus(String taskId) async {
     final task = _tasks.firstWhere((task) => task.id == taskId);
-    final newStatus = task.status == TaskStatus.completed 
-        ? TaskStatus.pending 
+    final newStatus = task.status == TaskStatus.completed
+        ? TaskStatus.pending
         : TaskStatus.completed;
-    
+
     await updateTask(task.copyWith(status: newStatus));
   }
 
