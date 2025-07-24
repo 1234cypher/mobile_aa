@@ -7,6 +7,8 @@ import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/success_provider.dart';
 import '../../providers/user_provider.dart';
+import '../../providers/challenge_provider.dart';
+import '../../providers/mood_provider.dart';
 import '../../utils/theme.dart';
 import '../../widgets/pomodoro_timer.dart';
 
@@ -110,8 +112,8 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildQuickStats(BuildContext context) {
-    return Consumer3<TaskProvider, SuccessProvider, UserProvider>(
-      builder: (context, taskProvider, successProvider, userProvider, child) {
+    return Consumer5<TaskProvider, SuccessProvider, UserProvider, ChallengeProvider, MoodProvider>(
+      builder: (context, taskProvider, successProvider, userProvider, challengeProvider, moodProvider, child) {
         return Row(
           children: [
             Expanded(
@@ -137,10 +139,10 @@ class DashboardScreen extends StatelessWidget {
             Expanded(
               child: _buildStatCard(
                 context,
-                'Focus aujourd\'hui',
-                '${userProvider.todayFocusMinutes}min',
-                Iconsax.timer,
-                AppTheme.accentColor,
+                'Défis terminés',
+                '${challengeProvider.completedChallenges.length}',
+                Iconsax.flash,
+                AppTheme.warningColor,
               ),
             ),
           ],
@@ -196,8 +198,9 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildTodayAffirmation(BuildContext context) {
-    return Consumer<UserProvider>(
-      builder: (context, userProvider, child) {
+    return Consumer2<UserProvider, ChallengeProvider>(
+      builder: (context, userProvider, challengeProvider, child) {
+        final todayChallenge = challengeProvider.todayChallenge;
         final affirmations = userProvider.defaultAffirmations;
         final todayAffirmation = affirmations[DateTime.now().day % affirmations.length];
         
@@ -215,13 +218,13 @@ class DashboardScreen extends StatelessWidget {
           child: Column(
             children: [
               const Icon(
-                Iconsax.heart,
+                Iconsax.flash,
                 color: Colors.white,
                 size: 32,
               ),
               const SizedBox(height: 12),
               Text(
-                'Affirmation du jour',
+                todayChallenge != null ? 'Défi du jour' : 'Affirmation du jour',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white.withOpacity(0.9),
                   fontWeight: FontWeight.w500,
@@ -229,7 +232,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                todayAffirmation,
+                todayChallenge?.title ?? todayAffirmation,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Colors.white,
@@ -237,6 +240,20 @@ class DashboardScreen extends StatelessWidget {
                   height: 1.4,
                 ),
               ),
+              if (todayChallenge != null) ...[
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to challenges screen
+                    Scaffold.of(context).openDrawer();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: AppTheme.primaryColor,
+                  ),
+                  child: const Text('Voir le défi'),
+                ),
+              ],
             ],
           ),
         );
